@@ -2,9 +2,11 @@ const path = require('path');
 const fs = require('fs');
 const colors = require('colors');
 const dirTree = require("directory-tree");
-var directoryPath = path.join(__dirname, '../template');
-var tree = dirTree(directoryPath, { exclude: [/node_modules/,/.git/] });
+var readline = require('readline-sync');
 
+var resp = readline.question('Write the absolute path you want to watch:\n');
+var directoryPath = path.join('', resp);
+var tree = dirTree(directoryPath, { exclude: [/node_modules/,/.git/] });
 
 function printTree /*:: <T>*/(initialTree /*: T*/, printNode /*: PrintNode<T>*/, getChildren /*: GetChildren<T>*/) {
   function printBranch(tree, branch) {
@@ -23,6 +25,7 @@ function printTree /*:: <T>*/(initialTree /*: T*/, printNode /*: PrintNode<T>*/,
         if(toPrint == 'LICENSE' || toPrint == 'README.md'){console.log(`${branch.blue}${branchHead.blue}${toPrint.gray}`);}
         else if(children.length != '0'){console.log(`${branch.blue}${branchHead.blue}${toPrint.blue}`);}
         else if(toPrint.slice(-3) == '.js' || toPrint.slice(-5) == '.json'){console.log(`${branch.blue}${branchHead.blue}${toPrint.yellow}`);}
+        else if(toPrint.slice(-4) == '.css'){console.log(`${branch.blue}${branchHead.blue}${toPrint.green}`)}
         else {console.log(`${branch.blue}${branchHead.blue}${toPrint}`);}
     }
 
@@ -43,9 +46,6 @@ function printTree /*:: <T>*/(initialTree /*: T*/, printNode /*: PrintNode<T>*/,
 
   printBranch(initialTree, '');
 }
-
-
-
 
 function printDir(tree){
     printTree(
@@ -76,7 +76,6 @@ function recursiveWatch(dirname){
                     if(eventType == 'change' || eventType == 'rename'){
                         console.clear();
                         var tree = dirTree(directoryPath, { exclude: [/node_modules/,/.git/] });
-
                         printDir(tree);
                     };
                 });
